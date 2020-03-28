@@ -45,8 +45,15 @@ use Illuminate\Support\Facades\Route;
 //     ]);
 // })->name('route-name-blog');
 
-Route::get('/', 'HomeController@home')->name('route-name-home');
+Route::get('/', 'HomeController@home')
+    ->name('route-name-home')
+    // ->middleware('auth') // protects this route from being access by unregistered users 
+    ;
 Route::get('contact', 'HomeController@contact')->name('route-name-contact');
 Route::resource('/posts', 'PostController');
+Route::get('/vue', 'HomeController@vue')->name('route-name-vue');
 //->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 //->except(['destroy']);
+
+
+Auth::routes();

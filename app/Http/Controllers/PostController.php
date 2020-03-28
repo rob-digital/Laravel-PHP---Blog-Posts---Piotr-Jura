@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\BlogPost;
 use App\Http\Requests\StorePost;
+//use Illuminate\Support\Facades\DB;
 
 
 class PostController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth')   // this will protect every route from this PostController class
+            ->only(['store', 'edit', 'update', 'create', 'destroy'])
+        ;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +24,24 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index', ['posts' => BlogPost::all()]);
+        // DB::connection()->enableQueryLog();
+
+        // $posts = BlogPost::with('comments')->get();
+        // foreach($posts as $post)
+        // {
+        //     foreach($post->comments  as $comment){
+        //         echo $comment->content;
+        //     }
+        // }
+
+        // dd(DB::getQueryLog());
+
+
+        // it will create 'comments_count' property
+        return view('posts.index',
+         ['posts' => BlogPost::withCount('comments')->get()]
+        );
+
     }
 
     /**
@@ -27,7 +52,10 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return view('posts.show', ['post' => BlogPost::findOrFail($id)]);
+        return view('posts.show',
+        [
+            'post' => BlogPost::with('comments')->findOrFail($id)
+        ]);
     }
 
 
@@ -45,7 +73,7 @@ class PostController extends Controller
         $request->session()->flash('status', 'Blog Post Created Successfully!' );
 
         // return redirect('/posts')
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.show', ['post' => $blogPost->id]);
 
         // if you want to redirect to address that takes some parameter
         // return redirect()->route('posts.show', ['post' => $blogPost->id]);

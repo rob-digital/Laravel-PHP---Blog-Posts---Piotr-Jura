@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
+            <h1>This is a VUE component in Laravel</h1>
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Example Component</div>

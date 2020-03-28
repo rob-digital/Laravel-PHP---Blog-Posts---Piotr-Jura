@@ -16,6 +16,30 @@
             <a class="p-2 text-dark" href="{{ route('route-name-contact') }}">Contact</a>
             <a class="p-2 text-dark" href="{{ route('posts.index') }}">Blog Posts</a>
             <a class="p-2 text-dark" href="{{ route('posts.create') }}">Add Blog Post</a>
+            <a class="p-2 text-dark" href="{{ route('route-name-vue') }}">Vue Test</a>
+
+            @guest
+                @if (Route::has('register'))
+                    <a class="p-2 text-dark" href="{{ route('login') }}">Login</a>
+                @endif
+                    <a class="p-2 text-dark" href="{{ route('register') }}">Register</a>
+            @else
+                <a
+                class="p-2 text-dark"
+                href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                >Logout ({{ Auth::user()->name }})</a>
+
+                <form
+                id="logout-form"
+                action="{{ route('logout') }}"
+                method="post"
+                style="display: none";
+                >
+                @csrf
+                </form>
+            @endguest
+
         </nav>
     </div>
 
