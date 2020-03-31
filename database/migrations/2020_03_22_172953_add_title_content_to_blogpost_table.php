@@ -19,9 +19,9 @@ class AddTitleContentToBlogpostTable extends Migration
             if(env('DB_CONNECTION') === 'sqlite_testing'){
                 $table->text('content')->default('');
             } else {
-                $table->text('content');
+            $table->text('content');
             }
-           
+
         });
     }
 

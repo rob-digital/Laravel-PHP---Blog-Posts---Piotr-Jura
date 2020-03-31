@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\BlogPost;
 use App\Http\Requests\StorePost;
 //use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 
 class PostController extends Controller
@@ -82,12 +83,24 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = BlogPost::findOrFail($id);
+
+        $this->authorize('update', $post);
+        // if (Gate::denies('update-post', $post)) {
+        //     abort(403, "You can't edit this post");
+        // }
+
         return view('posts.edit', ['post' => $post]);
     }
 
     public function update(StorePost $request, $anyVariableHere)
     {
         $post = BlogPost::findOrFail($anyVariableHere);
+
+        // if (Gate::denies('update-post', $post)) {
+        //     abort(403, "You can't edit this post");
+        // }
+        $this->authorize('update', $post);
+
         $validatedData = $request->validated();
 
         $post->fill($validatedData);
@@ -99,6 +112,14 @@ class PostController extends Controller
     public function destroy(Request $request, $someVariable)
     {
         $readPost = BlogPost::findOrFail($someVariable); // deleting this way you make sure that the post actually exists
+
+        // if (Gate::denies('delete-post', $readPost)) {
+        //     abort(403, "You can't delete this post");
+        // }
+
+        // this works with ---  Gate::define('posts.update', 'App\Policies\BlogPostPolicy@delete');
+        $this->authorize('delete', $readPost);
+
         $readPost->delete();
         // alternatively you can destroy the post directly using the primary key
         //  BlogPost::destroy($id or $someVariable maybe???)

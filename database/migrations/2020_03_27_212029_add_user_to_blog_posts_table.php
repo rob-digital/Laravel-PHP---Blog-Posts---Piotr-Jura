@@ -18,8 +18,10 @@ class AddUserToBlogPostsTable extends Migration
 
             if(env('DB_CONNECTION') === 'sqlite_testing'){
                 $table->unsignedBigInteger('user_id')->default(0);
+                // $table->text('content')->default('A');
             } else {
                 $table->unsignedBigInteger('user_id');
+
             }
 
             $table->foreign('user_id')
