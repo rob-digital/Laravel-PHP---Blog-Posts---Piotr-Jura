@@ -40,7 +40,10 @@ class PostController extends Controller
 
         // it will create 'comments_count' property
         return view('posts.index',
-         ['posts' => BlogPost::withCount('comments')->get()]
+         [
+             'posts' => BlogPost::localQueryScopeLatestOnTop()->withCount('comments')->get(),
+            'variable_most_commented' => BlogPost::mostCommented()->take(5)->get(),
+        ]
         );
 
     }
@@ -55,7 +58,12 @@ class PostController extends Controller
     {
         return view('posts.show',
         [
-            'post' => BlogPost::with('comments')->findOrFail($id)
+             'post' => BlogPost::with('comments')->findOrFail($id),  // simple fetch
+
+            // 'post' => BlogPost::with(['comments' => function($query){
+            //     return $query->localQueryScopeLatestOnTop();
+            // }])->findOrFail($id),                                        // fetching and sorting using method from
+                                                                            // using localQueryScopeLatestOnTop from BlogPost/scopeLocalQueryScopeLatestOnTop
         ]);
     }
 
@@ -68,7 +76,7 @@ class PostController extends Controller
     public function store(StorePost $request)
     {
         $validatedData = $request->validated();
-
+        $validatedData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validatedData);
 
         $request->session()->flash('status', 'Blog Post Created Successfully!' );

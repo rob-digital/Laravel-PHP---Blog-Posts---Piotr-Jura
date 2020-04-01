@@ -1,6 +1,8 @@
 @extends('layout')
 
 @section('content')
+<div class="row">
+    <div class="col-8">
     <h2 class="label text-center">Your Blog Posts</h2>
     @forelse ($posts as $post)
         <p>
@@ -40,4 +42,27 @@
         @empty
         <p>No blog posts yet!</p>
     @endforelse
+    </div>
+
+    <div class="col-4">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Most Commented</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    What people are currently talking about
+                </h6>
+            </div>
+            <ul class="list-group list-group-flush">
+               @foreach ($variable_most_commented as $onePost)
+                <li class="list-group-item">{{ $onePost->title }}
+                    <a href="{{route('posts.show', ['post' => $post->id])}}"><br>
+                        {{ $post->title }}
+                    </a>
+                </li>
+               @endforeach
+            </ul>
+        </div>
+    </div>
+
+</div>
 @endsection
