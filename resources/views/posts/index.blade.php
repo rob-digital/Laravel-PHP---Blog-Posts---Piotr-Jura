@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
     <div class="col-8">
-    <h2 class="label text-center">Your Blog Posts</h2>
+    <h2 class="label text-center">Laravel Blog Posts</h2>
     @forelse ($posts as $post)
         <p>
             <h4>
