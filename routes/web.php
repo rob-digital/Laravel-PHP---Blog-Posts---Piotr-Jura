@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostTagController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,13 +48,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'HomeController@home')
     ->name('route-name-home')
-    // ->middleware('auth') // protects this route from being access by unregistered users 
+    // ->middleware('auth') // protects this route from being access by unregistered users
     ;
 Route::get('contact', 'HomeController@contact')->name('route-name-contact');
 Route::resource('/posts', 'PostController');
 Route::get('/vue', 'HomeController@vue')->name('route-name-vue');
 //->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 //->except(['destroy']);
-
+Route::get('posts/tag/{tag}', 'PostTagController@index')->name('route-name-tags-index');
 
 Auth::routes();

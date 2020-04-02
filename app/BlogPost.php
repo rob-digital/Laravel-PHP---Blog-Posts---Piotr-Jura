@@ -6,6 +6,8 @@ use App\Scopes\LatestScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use App\Scopes\DeletedItemsForAdminScope;
+use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
@@ -27,6 +29,12 @@ class BlogPost extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany('App\Tag')->withTimestamps();
+    }
+
+
     public function scopeLocalQueryScopeLatestOnTop($query)  // local query scope to sort from decs
     {                                                        // it must start with 'scope'
         return $query->orderBy(static::CREATED_AT, 'desc');   // use it in PostController where you fetch posts
@@ -44,9 +52,12 @@ class BlogPost extends Model
 
     public static function boot()
     {
+
+        static::addGlobalScope(new DeletedItemsForAdminScope);
         parent::boot();
 
         // static::addGlobalScope(new LatestScope);
+
 
         // Way1 - this deletes a BlogPost and related comments
         static::deleting(function(BlogPost $blogPost) {
@@ -54,6 +65,10 @@ class BlogPost extends Model
         });
         static::restoring(function (BlogPost $blogPost) {
             $blogPost->comments()->restore();
+        });
+
+        static::updating(function(BlogPost $blogPost) {
+            Cache::forget("blog-post-{$blogPost->id}");
         });
     }
 }
