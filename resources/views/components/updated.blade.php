@@ -1,7 +1,6 @@
 <p class="text-muted">
-    {{ empty(trim($slot)) ? 'Added: ' : $slot }} {{ $date->diffForHumans() }}<br/>
-  
+    {{ empty(trim($slot)) ? 'Added ' : $slot }} {{ $date->diffForHumans() }}
     @if(isset($name))
-        by: {{ $name }}
+        by {{ $name }}
     @endif
 </p>

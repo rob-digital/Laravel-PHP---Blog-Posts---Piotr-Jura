@@ -34,6 +34,10 @@ class BlogPost extends Model
         return $this->belongsToMany('App\Tag')->withTimestamps();
     }
 
+    public function image()
+    {
+        return $this->hasOne(Image::class);
+    }
 
     public function scopeLocalQueryScopeLatestOnTop($query)  // local query scope to sort from decs
     {                                                        // it must start with 'scope'
@@ -47,6 +51,13 @@ class BlogPost extends Model
     }
 
 
+    public function scopeLatestWithRelations($query)
+    {
+        return $query->localQueryScopeLatestOnTop()
+                    ->withCount('comments')
+                    ->with('user')
+                    ->with('tags');
+    }
 
 
 

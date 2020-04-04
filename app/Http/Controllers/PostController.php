@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\BlogPost;
 use App\Http\Requests\StorePost;
+use App\Image;
 use App\User;
 use Illuminate\Support\Facades\Cache;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
-
+// [
+//     'show' => 'view',
+//     'create' => 'create',
+//     'store' => 'create',
+//     'edit' => 'update',
+//     'update' => 'update',
+//     'destroy' => 'delete',
+// ]
 class PostController extends Controller
 {
 
@@ -56,7 +65,7 @@ class PostController extends Controller
         // it will create 'comments_count' property
         return view('posts.index',
          [
-            'posts' => BlogPost::localQueryScopeLatestOnTop()->withCount('comments')->with('user')->with('tags')->get(),
+            'posts' => BlogPost::latestWithRelations()->get(),
             // 'variable_most_commented' => $mostCommented,
             // 'variable_most_active_users' => $mostActive,
             // 'variable_most_active_last_month' => $mostActiveLastMonth,
@@ -76,7 +85,11 @@ class PostController extends Controller
     {
 
         $blogPostToBeStored = Cache::remember("blog-post-{$id}", 60, function() use($id){
-            return BlogPost::with('comments')->with('tags')->findOrFail($id);
+            return BlogPost::with('comments')
+                            ->with('tags')
+                            ->with('user')
+                            ->with('comments.user')
+                            ->findOrFail($id);
         });
 
         $sessionId = session()->getId();
@@ -140,6 +153,24 @@ class PostController extends Controller
         $validatedData['user_id'] = $request->user()->id;
         $blogPost = BlogPost::create($validatedData);
 
+
+        if($request->hasFile('thumbnail')){
+
+            $path = $request->file('thumbnail')->store('thumbnails');
+            $blogPost->image()->save(Image::create(['path' => $path]));
+
+            // $file = $request->file('thumbnail');
+            // dump($file);
+            // dump($file->getClientMimeType());
+            // dump($file->getClientOriginalExtension());
+
+            // $file->store('thumbnail');
+
+            // store file using chosen file
+            //dump($file->storeAs('thumbnail', $blogPost->id . '.' . $file->guessExtension() ));
+        }
+
+
         $request->session()->flash('status', 'Blog Post Created Successfully!' );
 
         // return redirect('/posts')
@@ -161,6 +192,8 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $post]);
     }
 
+    /// ------ update
+
     public function update(StorePost $request, $anyVariableHere)
     {
         $post = BlogPost::findOrFail($anyVariableHere);
@@ -173,6 +206,22 @@ class PostController extends Controller
         $validatedData = $request->validated();
 
         $post->fill($validatedData);
+
+        if($request->hasFile('thumbnail')){
+
+            $path = $request->file('thumbnail')->store('thumbnails');
+
+            if($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            } else {
+                $post->image()->save(Image::create(['path' => $path]));
+            }
+
+        }
+
+
         $post->save();
         $request->session()->flash('status', 'Blog Post was Updated!' );
         return redirect()->route('posts.show', ['post' => $post->id]);

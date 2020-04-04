@@ -10,13 +10,20 @@ class Comment extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['user_id', 'content'];
     // blog_post_id
     public function blogPost()
     {
         // return $this->belongsTo('App\BlogPost', 'post_id', 'blog_post_id');
         return $this->belongsTo('App\BlogPost');
-
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
     public function scopeLocalQueryScopeLatestOnTop($query)  // local query scope to sort from decs
     {                                                        // it must start with 'scope'
         return $query->orderBy(static::CREATED_AT, 'desc');   // use it in PostController where you fetch comments

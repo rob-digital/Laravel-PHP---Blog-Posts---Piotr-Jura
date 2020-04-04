@@ -41,6 +41,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(BlogPost::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function scopeWithMostBlogPosts($query)
     {
         //laravel will return a new filed 'blog_posts_count' it  will be added to select statement

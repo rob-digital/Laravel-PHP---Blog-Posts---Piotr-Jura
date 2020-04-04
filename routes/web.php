@@ -57,4 +57,6 @@ Route::get('/vue', 'HomeController@vue')->name('route-name-vue');
 //->except(['destroy']);
 Route::get('posts/tag/{tag}', 'PostTagController@index')->name('route-name-tags-index');
 
+Route::resource('posts.comments', 'PostCommentController')->only(['store']);
+
 Auth::routes();
