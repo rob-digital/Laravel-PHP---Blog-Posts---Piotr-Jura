@@ -17,14 +17,22 @@ class BlogPost extends Model
     // protected $table = 'blogpost';
     protected $fillable = ['title', 'content', 'user_id'];
 
+
+    //---------------------------------------------------------
         // this method name should be related to the related table with id
     // laravel will convert it to comments_id while searching for a foreign key
+    // public function comments()
+    // {
+    //     return $this->hasMany('App\Comment')->localQueryScopeLatestOnTop();
+    // }
+// ------------------------------------------------------------------------
+
     public function comments()
     {
-        return $this->hasMany('App\Comment')->localQueryScopeLatestOnTop();
+        return $this->morphMany('App\Comment', 'commentable')->localQueryScopeLatestOnTop();
     }
 
-    public function user()
+public function user()
     {
         return $this->belongsTo('App\User');
     }
@@ -36,7 +44,7 @@ class BlogPost extends Model
 
     public function image()
     {
-        return $this->hasOne(Image::class);
+        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function scopeLocalQueryScopeLatestOnTop($query)  // local query scope to sort from decs

@@ -47,6 +47,16 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    public function commentsOn()
+    {
+        return $this->morphMany('App\Comment', 'commentable')->localQueryScopeLatestOnTop();
+    }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
+
     public function scopeWithMostBlogPosts($query)
     {
         //laravel will return a new filed 'blog_posts_count' it  will be added to select statement

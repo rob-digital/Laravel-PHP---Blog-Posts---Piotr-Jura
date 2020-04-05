@@ -61,29 +61,14 @@
             <br/>
             <h4>Comments</h4>
 
-            @include('comments._form')
+            <x-commentForm
+            :routeSlot="route('posts.comments.store', ['post' => $post->id])"
+            ></x-commentForm>
 
 
-            @forelse ($post->comments as $comment)
-                <p>
-                    {{ $comment->content }}
-                </p>
-                {{-- <p class="text-muted">
-                    added {{ $comment->created_at->format('d-m-Y') }}
-                </p> --}}
-                @component('components.updated', [ 'date' => $comment->created_at, 'name' => $comment->user->name])
-
-                @endcomponent
-
-                <x-updated
-                :date="$post->updated_at"
-                >
-                Updated
-                </x-updated>
-
-            @empty
-                <p>No comments yet!</p>
-            @endforelse
+            <x-commentList
+                :comments="$post->comments"
+            ></x-commentList>
 
             <hr/>
 

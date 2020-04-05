@@ -141,11 +141,14 @@ class PostController extends Controller
         ]);
     }
 
+// -------------- create -------------------------------------------------
 
     public function create()
     {
         return view('posts.create');
     }
+
+// ------------------ store ---------------------------------------------
 
     public function store(StorePost $request)
     {
@@ -157,7 +160,7 @@ class PostController extends Controller
         if($request->hasFile('thumbnail')){
 
             $path = $request->file('thumbnail')->store('thumbnails');
-            $blogPost->image()->save(Image::create(['path' => $path]));
+            $blogPost->image()->save(Image::make(['path' => $path]));
 
             // $file = $request->file('thumbnail');
             // dump($file);
@@ -180,6 +183,8 @@ class PostController extends Controller
         // return redirect()->route('posts.show', ['post' => $blogPost->id]);
     }
 
+    //---------------------------edit ---------------------------------------------
+
     public function edit($id)
     {
         $post = BlogPost::findOrFail($id);
@@ -192,7 +197,7 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $post]);
     }
 
-    /// ------ update
+    /// --------------------------- update -------------------------------------------
 
     public function update(StorePost $request, $anyVariableHere)
     {
@@ -216,11 +221,10 @@ class PostController extends Controller
                 $post->image->path = $path;
                 $post->image->save();
             } else {
-                $post->image()->save(Image::create(['path' => $path]));
+                $post->image()->save(Image::make(['path' => $path]));
             }
 
         }
-
 
         $post->save();
         $request->session()->flash('status', 'Blog Post was Updated!' );
