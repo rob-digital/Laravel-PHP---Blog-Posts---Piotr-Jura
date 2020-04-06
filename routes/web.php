@@ -61,4 +61,10 @@ Route::resource('posts.comments', 'PostCommentController')->only(['store']);
 Route::resource('users.comments', 'UserCommentController')->only(['store']);
 Route::resource('users', 'UserController')->only(['show', 'edit', 'update']);
 
+// preview the mail which will be send
+Route::get('mailable', function () {
+    $comment = App\Comment::find(1);
+    return new App\Mail\CommentPostedMarkdown($comment);
+});
+
 Auth::routes();

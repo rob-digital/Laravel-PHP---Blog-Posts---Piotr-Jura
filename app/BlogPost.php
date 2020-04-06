@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use App\Scopes\DeletedItemsForAdminScope;
+use App\Traits\Taggable;
 use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
 
-    use SoftDeletes;
+    use SoftDeletes, Taggable;
 
     // protected $table = 'blogpost';
     protected $fillable = ['title', 'content', 'user_id'];
@@ -37,10 +38,7 @@ public function user()
         return $this->belongsTo('App\User');
     }
 
-    public function tags()
-    {
-        return $this->belongsToMany('App\Tag')->withTimestamps();
-    }
+
 
     public function image()
     {

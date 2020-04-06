@@ -6,6 +6,9 @@
         {{-- <p class="text-muted">
             added {{ $comment->created_at->format('d-m-Y') }}
         </p> --}}
+
+        @component('components.tags', ['my_tags' => $comment->tags])@endcomponent
+
         @component('components.updated', [
             'date' => $comment->created_at,
             'name' => $comment->user->name,
