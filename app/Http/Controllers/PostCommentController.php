@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\BlogPost;
+use App\Events\CommentPosted;
 use App\Http\Requests\StoreComment;
+use App\Jobs\NotifyUserPostWasCommented;
 use App\Mail\CommentPostedMarkdown;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -23,9 +25,14 @@ class PostCommentController extends Controller
             'user_id' => $request->user()->id
         ]);
 
-            Mail::to($post->user)->send(
-                new CommentPostedMarkdown($comment)
-            );
+        event(new CommentPosted($comment));
+
+        // Mail::to($post->user)->send(
+        //     new CommentPostedMarkdown($comment)
+        // );
+
+        // NotifyUserPostWasCommented::dispatch($comment);
+
 
         $request->session()->flash('status', 'Comment was created');
 

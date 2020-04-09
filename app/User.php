@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -71,5 +72,18 @@ class User extends Authenticatable
         }])
         ->has('blogPosts', '>=', 2)
         ->orderBy('blog_posts_count', 'desc');
+    }
+
+    public function scopeThatHasCommentedOnPost(Builder $query, BlogPost $post)
+    {
+        return $query->whereHas('comments', function($query) use ($post) {
+            return $query->where('commentable_id', '=', $post->id)
+                ->where('commentable_type', '=', BlogPost::class);
+        });
+    }
+
+    public function scopeThatIsAdmin(Builder $query)
+    {
+        return $query->where('is_admin', true);
     }
 }

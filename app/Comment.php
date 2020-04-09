@@ -6,7 +6,7 @@ use App\Scopes\LatestScope;
 use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
+
 
 class Comment extends Model
 {
@@ -39,20 +39,19 @@ class Comment extends Model
     {                                                        // it must start with 'scope'
         return $query->orderBy(static::CREATED_AT, 'desc');   // use it in PostController where you fetch comments
     }
-    public static function boot()
-    {
-        parent::boot();
+    // public static function boot()
+    // {
 
-        parent::boot();
+    //     parent::boot();
 
-        static::creating(function (Comment $comment) {
-            // dump($comment);
-            // dd(BlogPost::class);
-            if ($comment->commentable_type === BlogPost::class) {
-                Cache::forget("blog-post-{$comment->commentable_id}");
-                Cache::forget('mostCommented');
-            }
-        });
-        // static::addGlobalScope(new LatestScope);
-    }
+    //     static::creating(function (Comment $comment) {
+    //         // dump($comment);
+    //         // dd(BlogPost::class);
+    //         if ($comment->commentable_type === BlogPost::class) {
+    //             Cache::forget("blog-post-{$comment->commentable_id}");
+    //             Cache::forget('mostCommented');
+    //         }
+    //     });
+    //     // static::addGlobalScope(new LatestScope);
+    // }
 }

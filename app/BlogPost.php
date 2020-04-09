@@ -77,15 +77,15 @@ public function user()
 
 
         // Way1 - this deletes a BlogPost and related comments
-        static::deleting(function(BlogPost $blogPost) {
-            $blogPost->comments()->delete();
-        });
-        static::restoring(function (BlogPost $blogPost) {
-            $blogPost->comments()->restore();
-        });
+        // static::deleting(function(BlogPost $blogPost) {
+        //     $blogPost->comments()->delete();
+        // });
+        // static::restoring(function (BlogPost $blogPost) {
+        //     $blogPost->comments()->restore();
+        // });
 
-        static::updating(function(BlogPost $blogPost) {
-            Cache::forget("blog-post-{$blogPost->id}");
-        });
+        // static::updating(function(BlogPost $blogPost) {
+        //     Cache::forget("blog-post-{$blogPost->id}");
+        // });
     }
 }
